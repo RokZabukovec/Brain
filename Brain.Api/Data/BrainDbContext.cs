@@ -10,6 +10,8 @@ namespace Brain.Api.Data
 
         public DbSet<Command> Commands { get; set; }
 
+        public DbSet<Category> Categories { get; set; }
+
         public BrainDbContext(DbContextOptions<BrainDbContext> options) : base(options) { }
     }
 }

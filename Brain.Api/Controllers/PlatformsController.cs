@@ -8,21 +8,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace Brain.Api.Controllers
 {
     [ApiController]
-    [Route("/api/commands")]
-    public class CommandsController : ControllerBase
+    [Route("/api/platforms")]
+    public class PlatformsController : ControllerBase
     {
-        private readonly CommandsRepository _commands;
+        private readonly PlatformsRepository _platforms;
 
-        public CommandsController(CommandsRepository commandsRepository) 
+        public PlatformsController(PlatformsRepository platformsRepository) 
         {
-            _commands = commandsRepository;
+            _platforms = platformsRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-           var commands = await _commands.GetAll();
-            return Ok(commands);
+           var platforms = await _platforms.GetAll();
+            return Ok(platforms);
         }
 
         [HttpGet("{id:int}")]
@@ -30,8 +30,8 @@ namespace Brain.Api.Controllers
         {
             try
             {
-                var command = await _commands.ShowAsync(id);
-                return Ok(command);
+                var platform = await _platforms.ShowAsync(id);
+                return Ok(platform);
             } catch(Exception)
             {
                 return NotFound();
@@ -39,9 +39,9 @@ namespace Brain.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]Command command)
+        public async Task<IActionResult> Create([FromBody]Platform platform)
         {
-            var response = await _commands.Create(command);
+            var response = await _platforms.Create(platform);
             return Ok(response);
 
         }
@@ -51,7 +51,7 @@ namespace Brain.Api.Controllers
         {
             try
             {
-                var command = await _commands.DeleteAsync(id);
+                var platform = await _platforms.DeleteAsync(id);
                 return NoContent();
             }
             catch (Exception)
@@ -62,12 +62,12 @@ namespace Brain.Api.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> Update([FromBody]Command command)
+        public async Task<IActionResult> Update([FromBody]Platform platform)
         {
             try
             {
-                var updatedCommand = await _commands.UpdateAsync(command);
-                return Ok(updatedCommand);
+                var updatedPlatform = await _platforms.UpdateAsync(platform);
+                return Ok(updatedPlatform);
             }
             catch (Exception)
             {
@@ -75,6 +75,9 @@ namespace Brain.Api.Controllers
             }
             
         }
+
+
+
 
     }
 }

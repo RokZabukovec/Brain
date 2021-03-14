@@ -19,6 +19,7 @@ namespace Brain.Api.Models
         [MinLength(2, ErrorMessage = "The description should be at least 2 characters long.")]
         public string Description { get; set; }
 
+        [Required(ErrorMessage = "The category is required.")]
         public int CategoryId { get; set; }
 
         public virtual Category Category { get; set; }

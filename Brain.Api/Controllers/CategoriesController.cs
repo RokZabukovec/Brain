@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Brain.Api.Models;
 using Brain.Api.Repositories;
@@ -8,21 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace Brain.Api.Controllers
 {
     [ApiController]
-    [Route("/api/commands")]
-    public class CommandsController : ControllerBase
+    [Route("/api/categories")]
+    public class CategoriesController : ControllerBase
     {
-        private readonly CommandsRepository _commands;
+        private readonly CategoriesRepository _categories;
 
-        public CommandsController(CommandsRepository commandsRepository) 
+        public CategoriesController(CategoriesRepository categoriesRepository) 
         {
-            _commands = commandsRepository;
+            _categories = categoriesRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-           var commands = await _commands.GetAll();
-            return Ok(commands);
+           var categories = await _categories.GetAll();
+            return Ok(categories);
         }
 
         [HttpGet("{id:int}")]
@@ -30,8 +29,8 @@ namespace Brain.Api.Controllers
         {
             try
             {
-                var command = await _commands.ShowAsync(id);
-                return Ok(command);
+                var category = await _categories.ShowAsync(id);
+                return Ok(category);
             } catch(Exception)
             {
                 return NotFound();
@@ -39,9 +38,9 @@ namespace Brain.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]Command command)
+        public async Task<IActionResult> Create([FromBody]Category category)
         {
-            var response = await _commands.Create(command);
+            var response = await _categories.Create(category);
             return Ok(response);
 
         }
@@ -51,7 +50,7 @@ namespace Brain.Api.Controllers
         {
             try
             {
-                var command = await _commands.DeleteAsync(id);
+                var platform = await _categories.DeleteAsync(id);
                 return NoContent();
             }
             catch (Exception)
@@ -62,12 +61,12 @@ namespace Brain.Api.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> Update([FromBody]Command command)
+        public async Task<IActionResult> Update([FromBody]Category category)
         {
             try
             {
-                var updatedCommand = await _commands.UpdateAsync(command);
-                return Ok(updatedCommand);
+                var updatedPlatform = await _categories.UpdateAsync(category);
+                return Ok(updatedPlatform);
             }
             catch (Exception)
             {
@@ -75,6 +74,5 @@ namespace Brain.Api.Controllers
             }
             
         }
-
     }
 }

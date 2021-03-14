@@ -36,7 +36,7 @@ namespace Brain.Api.Repositories
 
         public async Task<Command> DeleteAsync(int Id)
         {
-            Command command = new Command() { Id = Id};
+            Command command = new Command() { Id = Id };
             _db.Commands.Attach(command);
             _db.Commands.Remove(command);
             await _db.SaveChangesAsync();
