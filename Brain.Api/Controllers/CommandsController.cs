@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Brain.Api.Models;
 using Brain.Api.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brain.Api.Controllers
@@ -18,9 +20,11 @@ namespace Brain.Api.Controllers
             _commands = commandsRepository;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+           var user = HttpContext.User;
            var commands = await _commands.GetAll();
             return Ok(commands);
         }

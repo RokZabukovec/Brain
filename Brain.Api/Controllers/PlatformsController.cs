@@ -75,9 +75,5 @@ namespace Brain.Api.Controllers
             }
             
         }
-
-
-
-
     }
 }
