@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Brain.Api.Data;
 using Brain.Api.Models;
@@ -10,7 +9,7 @@ namespace Brain.Api.Repositories
 {
     public class CommandsRepository
     {
-        protected readonly BrainDbContext _db;
+        private readonly BrainDbContext _db;
 
         public CommandsRepository(BrainDbContext dbContext)
         {

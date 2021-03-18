@@ -10,9 +10,7 @@ namespace Brain.Api.Extensions
 {
     public static class AuthExtension
     {
-        public static IServiceCollection AddAuth(
-            this IServiceCollection services,
-            JwtSettings jwtSettings)
+        public static IServiceCollection AddAuth(this IServiceCollection services, JwtSettings jwtSettings)
         {
             services
                 .AddAuthorization()

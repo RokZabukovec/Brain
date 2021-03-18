@@ -47,7 +47,9 @@ namespace Brain.Api.Controllers.Authentication
 
             if (userCreateResult.Succeeded)
             {
-                return Created(string.Empty, string.Empty);
+                var roles = await _userManager.GetRolesAsync(user);
+                string jwtToken = GenerateJwt(user, roles);
+                return Ok(new UserAuthenticatedResponse("Success", jwtToken));
             }
 
             return Problem(userCreateResult.Errors.First().Description, null, 500);
@@ -59,7 +61,7 @@ namespace Brain.Api.Controllers.Authentication
             var user = _userManager.Users.SingleOrDefault(u => u.UserName == userLoginResource.Email);
             if (user is null)
             {
-                return NotFound("User not found");
+                return NotFound(new UserAuthenticatedResponse("Failure", null));
             }
 
             var userSigninResult = await _userManager.CheckPasswordAsync(user, userLoginResource.Password);
@@ -67,7 +69,8 @@ namespace Brain.Api.Controllers.Authentication
             if (userSigninResult)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                return Ok(GenerateJwt(user, roles));
+                var jwtToken = GenerateJwt(user, roles);
+                return Ok(new UserAuthenticatedResponse("Success", jwtToken));
             }
 
             return BadRequest("Email or password incorrect.");
@@ -115,10 +118,10 @@ namespace Brain.Api.Controllers.Authentication
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim("Id", user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             };
 
             var roleClaims = roles.Select(r => new Claim(ClaimTypes.Role, r));

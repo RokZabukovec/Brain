@@ -2,11 +2,14 @@
 using System.Threading.Tasks;
 using Brain.Api.Models;
 using Brain.Api.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brain.Api.Controllers
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("/api/categories")]
     public class CategoriesController : ControllerBase
     {
@@ -50,7 +53,7 @@ namespace Brain.Api.Controllers
         {
             try
             {
-                var platform = await _categories.DeleteAsync(id);
+                await _categories.DeleteAsync(id);
                 return NoContent();
             }
             catch (Exception)
@@ -72,7 +75,6 @@ namespace Brain.Api.Controllers
             {
                 return BadRequest();
             }
-            
         }
     }
 }

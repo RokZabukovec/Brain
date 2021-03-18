@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Brain.Api.Models;
 using Brain.Api.Repositories;
@@ -24,8 +23,7 @@ namespace Brain.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-           var user = HttpContext.User;
-           var commands = await _commands.GetAll();
+            var commands = await _commands.GetAll();
             return Ok(commands);
         }
 
