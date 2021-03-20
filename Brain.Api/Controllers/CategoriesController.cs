@@ -94,5 +94,19 @@ namespace Brain.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("platform/{id:int}")]
+        public async Task<IActionResult> GetByCategoryId(int id)
+        {
+            try
+            {
+                var categories = await _categories.GetByPlatformId(id);
+                return Ok(categories);
+            }
+            catch (Exception e)
+            {
+                return Problem(e.Message);
+            }
+        }
     }
 }

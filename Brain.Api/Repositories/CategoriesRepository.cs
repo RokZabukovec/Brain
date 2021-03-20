@@ -57,5 +57,12 @@ namespace Brain.Api.Repositories
             await _db.SaveChangesAsync();
             return category;
         }
+
+        public async Task<List<Category>> GetByPlatformId(int Id)
+        {
+           return await _db.Categories
+               .Where(x => x.PlatformId == Id)
+               .ToListAsync();
+        }
     }
 }
