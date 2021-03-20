@@ -1,11 +1,23 @@
 <template>
-  <div class="commands">
-    <div v-for="command in commands" v-bind:key="command.id" >
-      <div class="command mt-1 d-flex flex-row justify-content-between">
-        <code>{{ command.name }}</code>
-        <p>{{ command.description }}</p>
+  <div class="container">
+    <div class="row">
+      <Searchbar/>
+      <div class="col-md-12 px-0">
+        <div v-for="category in categories" v-bind:key="category.id" >
+          <div class="card mt-5">
+            <div class="card-body">
+              <h5 class="card-title">{{ category.name }}</h5>
+              <p class="card-text">{{ category.description }}</p>
+              <div class="d-flex justify-content-between" v-for="command in category.commands" v-bind:key="command.id" >
+                <code>{{ command.name }}</code>
+                <p>{{ command.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -13,20 +25,24 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import axios from 'axios'
+import Searchbar from "@/components/profile/search/Searchbar";
 
-@Component
+@Component ({
+  components: {
+    Searchbar
+  }
+})
+
 class Commands extends Vue {
 
-  commands = [];
-
+  categories = [];
+  
+  
   mounted(){
-   axios.get("https://localhost:5001/api/commands",{
-     headers: {
-       Authorization: 'Bearer ' + localStorage.getItem('brain_token')
-     }
-   })
+   axios.get("https://localhost:5001/api/categories")
    .then(response => {
-      this.commands = response.data;
+      console.log(response);
+      this.categories = response.data;
    })
    .catch(error => {
      console.log(error);

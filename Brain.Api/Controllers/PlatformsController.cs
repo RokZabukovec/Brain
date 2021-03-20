@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Brain.Api.Models;
+using Brain.Api.Models.Account;
 using Brain.Api.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brain.Api.Controllers
@@ -12,17 +13,29 @@ namespace Brain.Api.Controllers
     public class PlatformsController : ControllerBase
     {
         private readonly PlatformsRepository _platforms;
+        
+        private readonly UserManager<User> _userManager;
 
-        public PlatformsController(PlatformsRepository platformsRepository) 
+        public PlatformsController(PlatformsRepository platformsRepository, UserManager<User> userManager) 
         {
             _platforms = platformsRepository;
+            _userManager = userManager;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-           var platforms = await _platforms.GetAll();
-            return Ok(platforms);
+            try
+            {
+                var userTest = await _userManager.FindByIdAsync("a5ec1c41-b9a9-4078-8ee7-b58bbbc68759");
+                var platforms = await _platforms.GetAll(userTest);
+                return Ok(platforms);
+            }
+            catch (Exception e)
+            {
+                return Problem(e.Message);
+            }
+
         }
 
         [HttpGet("{id:int}")]
@@ -41,6 +54,8 @@ namespace Brain.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]Platform platform)
         {
+            var userTest = await _userManager.FindByIdAsync("a5ec1c41-b9a9-4078-8ee7-b58bbbc68759");
+            platform.User = userTest;
             var response = await _platforms.Create(platform);
             return Ok(response);
 

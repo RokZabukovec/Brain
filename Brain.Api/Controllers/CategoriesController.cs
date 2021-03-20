@@ -1,30 +1,41 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Brain.Api.Models;
+using Brain.Api.Models.Account;
 using Brain.Api.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brain.Api.Controllers
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("/api/categories")]
     public class CategoriesController : ControllerBase
     {
         private readonly CategoriesRepository _categories;
-
-        public CategoriesController(CategoriesRepository categoriesRepository) 
+        private readonly UserManager<User> _userManager;
+        public CategoriesController(CategoriesRepository categoriesRepository, UserManager<User> userManager) 
         {
             _categories = categoriesRepository;
+            _userManager = userManager;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-           var categories = await _categories.GetAll();
-            return Ok(categories);
+            try
+            {
+                var userTest = await _userManager.FindByIdAsync("a5ec1c41-b9a9-4078-8ee7-b58bbbc68759");
+                var categories = await _categories.GetAll(userTest);
+                return Ok(categories);
+            }
+            catch (Exception e)
+            {
+                return Problem(e.Message);
+            }
+
         }
 
         [HttpGet("{id:int}")]
@@ -43,8 +54,15 @@ namespace Brain.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]Category category)
         {
-            var response = await _categories.Create(category);
-            return Ok(response);
+            try
+            {
+                var response = await _categories.Create(category);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return Problem(e.Message);
+            }
 
         }
 

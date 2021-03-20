@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Brain.Api.Data;
 using Brain.Api.Models;
+using Brain.Api.Models.Account;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brain.Api.Repositories
@@ -17,9 +18,11 @@ namespace Brain.Api.Repositories
             _db = dbContext;
         }
 
-        public async Task<List<Platform>> GetAll()
+        public async Task<List<Platform>> GetAll(User user)
         {
-            return await _db.Platforms.ToListAsync();
+            return await _db.Platforms
+                .Where(x => x.UserId == user.Id)
+                .ToListAsync();
         }
 
         public async Task<Platform> Create(Platform platform)

@@ -16,6 +16,7 @@
         <router-link to="/register" class="nav-link">Register</router-link>
       </li>
     </ul>
+    
   </div>
 </nav>
   
