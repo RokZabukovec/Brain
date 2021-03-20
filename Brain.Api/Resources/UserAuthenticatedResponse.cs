@@ -2,13 +2,13 @@ namespace Brain.Api.Resources
 {
     public class UserAuthenticatedResponse
     {
-        public string _status { get; set; }
+        public bool _success { get; set; }
 
         public string _token { get; set; }
 
-        public UserAuthenticatedResponse(string status, string token)
+        public UserAuthenticatedResponse(bool success, string token)
         {
-            _status = status;
+            _success = success;
 
             _token = token;
         }

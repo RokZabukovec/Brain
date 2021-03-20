@@ -17,14 +17,14 @@ import axios from 'axios'
 @Component
 class Commands extends Vue {
 
-  data() {
-    return {
-      commands: [],
-    }
-  }
+  commands = [];
 
   mounted(){
-   axios.get("https://localhost:5001/api/commands")
+   axios.get("https://localhost:5001/api/commands",{
+     headers: {
+       Authorization: 'Bearer ' + localStorage.getItem('brain_token')
+     }
+   })
    .then(response => {
       this.commands = response.data;
    })

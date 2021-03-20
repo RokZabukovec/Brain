@@ -37,8 +37,8 @@ namespace Brain.Api.Controllers.Authentication
             _jwtSettings = jwtSettings.Value;
         }
         
-        [HttpPost("signup")]
-        public async Task<IActionResult> SignUp(UserSignupResource userSignUpResource)
+        [HttpPost("registration")]
+        public async Task<IActionResult> Registration(UserSignupResource userSignUpResource)
         {
             
             var user = _mapper.Map<UserSignupResource, User>(userSignUpResource);
@@ -49,19 +49,19 @@ namespace Brain.Api.Controllers.Authentication
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 string jwtToken = GenerateJwt(user, roles);
-                return Ok(new UserAuthenticatedResponse("Success", jwtToken));
+                return Ok(new UserAuthenticatedResponse(true, jwtToken));
             }
 
             return Problem(userCreateResult.Errors.First().Description, null, 500);
         }
         
         [HttpPost("login")]
-        public async Task<IActionResult> SignIn(UserSignupResource userLoginResource)
+        public async Task<IActionResult> Login(UserSignupResource userLoginResource)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.UserName == userLoginResource.Email);
             if (user is null)
             {
-                return NotFound(new UserAuthenticatedResponse("Failure", null));
+                return NotFound(new UserAuthenticatedResponse(false, null));
             }
 
             var userSigninResult = await _userManager.CheckPasswordAsync(user, userLoginResource.Password);
@@ -70,7 +70,7 @@ namespace Brain.Api.Controllers.Authentication
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 var jwtToken = GenerateJwt(user, roles);
-                return Ok(new UserAuthenticatedResponse("Success", jwtToken));
+                return Ok(new UserAuthenticatedResponse(true, jwtToken));
             }
 
             return BadRequest("Email or password incorrect.");
