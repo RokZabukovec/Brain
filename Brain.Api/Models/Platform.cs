@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Brain.Api.Models.Account;
 
 namespace Brain.Api.Models
 {
@@ -22,11 +23,16 @@ namespace Brain.Api.Models
 
         public DateTime ModifiedDate { get; set; }
 
+        [Required(ErrorMessage = "The user is required.")]
+        public Guid UserId { get; set; }
+
+        public virtual User User { get; set; }
+
         public Platform()
         {
             var date = DateTime.UtcNow;
-            this.CreatedDate = date;
-            this.ModifiedDate = date;
+            CreatedDate = date;
+            ModifiedDate = date;
         }
 
     }
