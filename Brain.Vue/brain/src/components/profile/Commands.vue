@@ -1,10 +1,14 @@
-<template>
+<template v-on:update-commands="updateCommands">
   <div class="container">
     <div class="row">
       <Searchbar/>
+      <CategoryModal/>
+      <div class="empty col-md-12 d-flex justify-content-center mt-5" v-if="categories.length === 0">
+        <p class="text-secondary">No commands found</p>
+      </div>
       <div class="col-md-12 px-0">
         <div v-for="category in categories" v-bind:key="category.id" >
-          <div class="card mt-5">
+          <div class="category card mt-5">
             <div class="card-body">
               <h5 class="card-title">{{ category.name }}</h5>
               <p class="card-text">{{ category.description }}</p>
@@ -17,7 +21,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -29,7 +32,7 @@ import Searchbar from "@/components/profile/search/Searchbar";
 
 @Component ({
   components: {
-    Searchbar
+    Searchbar,
   }
 })
 
@@ -39,6 +42,17 @@ class Commands extends Vue {
   
   
   mounted(){
+    this.$root.$on('update-commands', (platform) =>{
+      let url = "https://localhost:5001/api/categories/platform/" + platform.id;
+      axios.get(url)
+          .then(response => {
+            this.categories = response.data;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    });
+    
    axios.get("https://localhost:5001/api/categories")
    .then(response => {
       console.log(response);
@@ -48,16 +62,22 @@ class Commands extends Vue {
      console.log(error);
    });
   }
-
 }
 export default Commands;
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .category {
+    animation: fadeIn 0.3s;
+  }
 
-  .commands {
-    background: #ffffff;
-    padding: 5px;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 </style>

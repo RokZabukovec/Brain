@@ -62,6 +62,7 @@ namespace Brain.Api.Repositories
         {
            return await _db.Categories
                .Where(x => x.PlatformId == Id)
+               .Include(y => y.Commands)
                .ToListAsync();
         }
     }
