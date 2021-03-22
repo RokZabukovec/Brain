@@ -1,8 +1,7 @@
-<template v-on:update-commands="updateCommands">
+<template>
   <div class="container">
     <div class="row">
       <Searchbar/>
-      <CategoryModal/>
       <div class="empty col-md-12 d-flex justify-content-center mt-5" v-if="categories.length === 0">
         <p class="text-secondary">No commands found</p>
       </div>
