@@ -6,13 +6,16 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
+      <li class="nav-item" v-if="!isAnonymous">
          <router-link to="/profile" class="nav-link">Profile</router-link>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" v-if="!isAnonymous">
+        <router-link to="/logout" class="nav-link">Logout</router-link>
+      </li>
+      <li class="nav-item" v-if="isAnonymous">
         <router-link to="/login" class="nav-link">Login</router-link>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" v-if="isAnonymous">
         <router-link to="/register" class="nav-link">Register</router-link>
       </li>
     </ul>
@@ -23,9 +26,19 @@
 </template>
 
 <script>
-export default {
-  name: 'Navbar',
+import Vue from "vue";
+import Component from "vue-class-component";
+
+@Component
+class Navbar extends Vue{
+  
+  get isAnonymous() {
+    return localStorage.getItem('brain_token') === null;
+  }
+  
 }
+
+export default Navbar;
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

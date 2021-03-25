@@ -65,11 +65,10 @@ class RegisterForm extends Vue {
       url: "https://localhost:5001/api/auth/registration",
       headers: {},
       data: data
-    }).then(response =>{
-      console.log(response);
+    }).then(response => {
       if (response.data._success) {
         localStorage.setItem('brain_token', response.data._token);
-        this.$router.push({name: 'Profile'});
+        this.$router.push({name: 'Login'});
       }
     }).catch(error => {
       console.log(error);

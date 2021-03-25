@@ -61,7 +61,7 @@ namespace Brain.Api.Controllers.Authentication
             var user = _userManager.Users.SingleOrDefault(u => u.UserName == userLoginResource.Email);
             if (user is null)
             {
-                return NotFound(new UserAuthenticatedResponse(false, null));
+                return Unauthorized(new UserAuthenticatedResponse(false, null));
             }
 
             var userSigninResult = await _userManager.CheckPasswordAsync(user, userLoginResource.Password);
