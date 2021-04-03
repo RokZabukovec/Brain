@@ -59,11 +59,6 @@ namespace Brain.Api.Controllers.Authentication
         public async Task<IActionResult> Login(UserSignupResource userLoginResource)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.UserName == userLoginResource.Email);
-            if (user is null)
-            {
-                return Unauthorized(new UserAuthenticatedResponse(false, null));
-            }
-
             var userSigninResult = await _userManager.CheckPasswordAsync(user, userLoginResource.Password);
 
             if (userSigninResult)
@@ -73,7 +68,7 @@ namespace Brain.Api.Controllers.Authentication
                 return Ok(new UserAuthenticatedResponse(true, jwtToken));
             }
 
-            return BadRequest("Email or password incorrect.");
+            return NotFound("Email or password is incorrect.");
         }
         
         [HttpPost("roles")]
@@ -118,7 +113,6 @@ namespace Brain.Api.Controllers.Authentication
         {
             var claims = new List<Claim>
             {
-                new Claim("Id", user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

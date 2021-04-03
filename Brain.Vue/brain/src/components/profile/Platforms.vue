@@ -2,7 +2,8 @@
     <div class="platforms mt-5">
       <div class="d-flex justify-content-start">
         <div class="new-platform">
-          <b-button id="show-btn" variant="outline-primary" @click="$bvModal.show('new-platform')">New</b-button>
+          <b-button id="show-btn" variant="outline-primary" @click="$bvModal.show('new-platform')" v-show="platforms.length">New</b-button>
+          <b-button v-b-modal.modal-scrollable variant="outline-warning" @click="$bvModal.show('edit-platforms')" class="ml-2" v-show="platforms.length">Edit</b-button>
           <b-modal id="new-platform" hide-footer title="Add platform">
             <div>
               <b-form @submit.prevent="onSubmit">
@@ -18,8 +19,6 @@
               </b-form>
             </div>
           </b-modal>
-          
-          <b-button v-b-modal.modal-scrollable variant="outline-warning" @click="$bvModal.show('edit-platforms')" class="ml-2">Edit</b-button>
 
           <b-modal id="edit-platforms" title="Edit platforms">
             <table class="table table-striped">
@@ -42,7 +41,7 @@
             </table>
           </b-modal>
         </div>
-        <div v-for="platform in platforms" v-bind:key="platform.id">
+        <div v-for="platform in platforms" v-bind:key="platform.id" v-show="platforms.length > 0">
           <div class="command py-2 px-3 d-flex mx-3"  v-on:click.prevent="platformClick(platform.name, platform.id)">
             <p class="platform-link fs-3" :data-platform-id="platform.id">{{ platform.name }}</p>
           </div>
@@ -72,6 +71,7 @@ class Platforms extends Vue {
             this.$bvModal.hide('new-platform');
             this.form.Name = '';
             this.form.Description = '';
+            this.$root.$emit('platform-created', response.data);
           }
         })
         .catch(error => {
@@ -79,11 +79,13 @@ class Platforms extends Vue {
         });
   }
   
-  mounted(){
+  mounted() {
     axios.get("https://localhost:5001/api/platforms")
         .then(response => {
           console.log(response);
           this.platforms = response.data;
+          console.log('LOADED', this.platforms[0]);
+          this.$root.$emit('profile-loaded', this.platforms[0]);
         })
         .catch(error => {
           console.log(error);

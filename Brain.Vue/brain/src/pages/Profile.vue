@@ -1,26 +1,41 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
-      <div class="platforms-container col-sm-12">
-        <Platforms/>
-      </div>
-      <div class="commands-container col-sm-12">
-        <Commands/>
+      <SidebarNav />
+      <div class="container mt-5">
+        <div class="row">
+          <Header title="Commands" description="Command cheatsheet made for you, by you."/>
+        </div>
+        <div class="row">
+          <div class="platforms-container col-sm-12">
+            <Platforms/>
+          </div>
+          <div class="commands-container col-sm-12">
+            <Commands/>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Platforms from '../components/profile/Platforms.vue';
-import Commands from '../components/profile/Commands.vue';
+import Platforms from '@/components/profile/Platforms.vue';
+import Commands from '@/components/profile/Commands.vue';
+import SidebarNav from '@/components/SidebarNav';
+import Header from '@/components/profile/header/Header';
 
 export default {
   name: 'Profile',
-  components: {Platforms, Commands}
+  components: {Platforms, Commands, SidebarNav, Header}
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+  .platforms-container, .commands-container {
+    padding: 0;
+  }
+  
 </style>

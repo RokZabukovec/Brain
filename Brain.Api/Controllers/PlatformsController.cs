@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Brain.Api.Models;
 using Brain.Api.Models.Account;
 using Brain.Api.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brain.Api.Controllers
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = 
+        JwtBearerDefaults.AuthenticationScheme)]
     [Route("/api/platforms")]
     public class PlatformsController : ControllerBase
     {
@@ -21,15 +26,21 @@ namespace Brain.Api.Controllers
             _platforms = platformsRepository;
             _userManager = userManager;
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                var userTest = await _userManager.FindByIdAsync("a5ec1c41-b9a9-4078-8ee7-b58bbbc68759");
-                var platforms = await _platforms.GetAll(userTest);
-                return Ok(platforms);
+                var jwtUser = HttpContext.User;
+                var userId= jwtUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (userId != null)
+                {
+                    var user = await _userManager.FindByIdAsync(userId);
+                    var platforms = await _platforms.GetAll(user);
+                    return Ok(platforms); 
+                }
+                return Unauthorized();
             }
             catch (Exception e)
             {
@@ -54,10 +65,26 @@ namespace Brain.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]Platform platform)
         {
-            var userTest = await _userManager.FindByIdAsync("a5ec1c41-b9a9-4078-8ee7-b58bbbc68759");
-            platform.User = userTest;
-            var response = await _platforms.Create(platform);
-            return Ok(response);
+            try
+            {
+                var user = HttpContext.User;
+                var userId= user.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (userId != null)
+                {
+                    var userTest = await _userManager.FindByIdAsync(userId);
+                    platform.User = userTest;
+                    var response = await _platforms.Create(platform);
+                    return Ok(response);
+                }
+
+                return Unauthorized();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
         }
 
@@ -66,14 +93,32 @@ namespace Brain.Api.Controllers
         {
             try
             {
-                var platform = await _platforms.DeleteAsync(id);
-                return NoContent();
+                var user = HttpContext.User;
+                var userId= user.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (userId != null)
+                {
+                    var platform = await _platforms.ShowAsync(id);
+
+                    if (platform == null)
+                    {
+                        return NotFound();
+                    }
+                    
+                    if (platform.UserId.ToString().ToLower() == userId.ToLower())
+                    {
+                        await _platforms.DeleteAsync(id);
+                        return Ok(platform);
+                    }
+
+                    return Unauthorized();
+                }
             }
             catch (Exception)
             {
-                return NotFound();
+                return BadRequest();
             }
 
+            return BadRequest();
         }
 
         [HttpPatch]
@@ -81,14 +126,24 @@ namespace Brain.Api.Controllers
         {
             try
             {
-                var updatedPlatform = await _platforms.UpdateAsync(platform);
-                return Ok(updatedPlatform);
+                var user = HttpContext.User;
+                var userId= user.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (userId != null)
+                {
+                    if (platform.UserId.ToString().ToLower() == userId.ToLower())
+                    {
+                        var updatedPlatform = await _platforms.UpdateAsync(platform);
+                        return Ok(updatedPlatform);
+                    }
+
+                    return Unauthorized();
+                }
             }
             catch (Exception)
             {
                 return BadRequest();
             }
-            
+            return BadRequest();
         }
     }
 }

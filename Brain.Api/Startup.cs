@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using AutoMapper;
 using Brain.Api.Extensions;
 using Brain.Api.Settings;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Brain.Api
 {
@@ -36,9 +37,9 @@ namespace Brain.Api
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
             services.AddAutoMapper(typeof(Startup));
             services.AddCors();
-            services.AddTransient<CommandsRepository>();
-            services.AddTransient<PlatformsRepository>();
-            services.AddTransient<CategoriesRepository>();
+            services.AddScoped<CommandsRepository>();
+            services.AddScoped<PlatformsRepository>();
+            services.AddScoped<CategoriesRepository>();
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
@@ -68,6 +69,7 @@ namespace Brain.Api
             });
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

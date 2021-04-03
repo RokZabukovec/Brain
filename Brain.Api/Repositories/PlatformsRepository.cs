@@ -34,13 +34,12 @@ namespace Brain.Api.Repositories
 
         public async Task<Platform> ShowAsync(int Id)
         {
-            return await _db.Platforms.FirstAsync(platform => platform.Id == Id);
+            return await _db.Platforms.FirstOrDefaultAsync(platform => platform.Id == Id);
         }
 
         public async Task<Platform> DeleteAsync(int Id)
         {
-            Platform platform = new Platform() { Id = Id };
-            _db.Platforms.Attach(platform);
+            var platform = await _db.Platforms.FindAsync(Id);  
             _db.Platforms.Remove(platform);
             await _db.SaveChangesAsync();
             return platform;

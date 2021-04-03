@@ -15,7 +15,7 @@
 <script>
 import Vue from "vue";
 import axios from "axios";
-
+import Authentication from "@/services/authentication";
 class LoginForm extends Vue {
   
   
@@ -35,17 +35,37 @@ class LoginForm extends Vue {
       url: "https://localhost:5001/api/auth/login",
       data: data
     }).then(response => {
-      
+      console.log(response)
       if (response.data._success) {
-        localStorage.setItem('brain_token', response.data._token);
+        Authentication.setToken(response.data._token)
         this.$router.push({name: 'Profile'});
-        var notification = {
-          title: 'Login Successful'
+        let notification = {
+          title: 'Login Successful',
+          description: null,
+          error: false
         }
-        console.log(notification);
+        
         this.$root.$emit('notification', notification);
+        this.$root.$emit('login', true);
+      } else {
+        console.log('Failed')
+        let notification = {
+          title: 'Login failed',
+          description: 'Something went wrong. Try again.',
+          error: false
+        }
+        this.$root.$emit('notification', notification);
+        this.$root.$emit('login', false);
       }
     }).catch(error => {
+      
+      let notification = {
+        title: 'Login Failed',
+        error: true
+      }
+
+      this.$root.$emit('notification', notification);
+      this.$root.$emit('login', false);
       console.log(error);
     });
   }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Brain.Api.Models;
 using Brain.Api.Models.Account;
@@ -11,12 +12,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace Brain.Api.Controllers
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = 
+        JwtBearerDefaults.AuthenticationScheme)]
     [Route("/api/categories")]
     public class CategoriesController : ControllerBase
     {
         private readonly CategoriesRepository _categories;
+
         private readonly UserManager<User> _userManager;
-        public CategoriesController(CategoriesRepository categoriesRepository, UserManager<User> userManager) 
+        
+        public CategoriesController(CategoriesRepository categoriesRepository, CommandsRepository commands,  UserManager<User> userManager) 
         {
             _categories = categoriesRepository;
             _userManager = userManager;
@@ -27,15 +32,20 @@ namespace Brain.Api.Controllers
         {
             try
             {
-                var userTest = await _userManager.FindByIdAsync("a5ec1c41-b9a9-4078-8ee7-b58bbbc68759");
-                var categories = await _categories.GetAll(userTest);
-                return Ok(categories);
+                var jwtUser = HttpContext.User;
+                var userId= jwtUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (userId != null)
+                {
+                    var user = await _userManager.FindByIdAsync(userId);
+                    var categories = await _categories.GetAll(user);
+                    return Ok(categories);
+                }
+                return Unauthorized();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return Problem(e.Message);
+                return BadRequest();
             }
-
         }
 
         [HttpGet("{id:int}")]

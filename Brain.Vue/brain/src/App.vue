@@ -1,8 +1,16 @@
 <template>
   <div id="app">
-    <Navbar />
-    <div class="notification" v-if="notification.title" v-on:notification = "showNotification">
-      <h3>{{ notification.title }}</h3>
+    <div aria-live="polite" aria-atomic="true" class="bg-dark position-relative bd-example-toasts" v-bind:variant="alertVariant" v-show="showAlert">
+      <div class="toast-container position-absolute p-3" id="toastPlacement">
+        <div class="toast">
+          <div class="toast-header">
+            <strong class="me-auto">{{ notification.title }}</strong>
+          </div>
+          <div class="toast-body">
+            {{ notification.description }}
+          </div>
+        </div>
+      </div>
     </div>
     <router-view></router-view>
   </div>
@@ -19,19 +27,38 @@ import Vue from "vue";
   }
 })
 class App extends Vue {
+  
+  showAlert = false;
+  
+  alertVariant = 'success';
+  
   notification = {
-    title: null
+    title: null,
+    description: null,
+    error: false
   };
-
-  showNotification(notification) {
-    console.log('Notification', notification);
-    this.notification = notification;
-  }
+  
   mounted(){
     this.$root.$on('notification', (notification) => {
+      console.log('Notified')
       this.notification = notification;
-      console.log('Notification received');
+      this.showAlert = true;
+      
+      if (notification.error) {
+        this.alertVariant = 'danger';
+      } else {
+        this.alertVariant = 'success';
+      }
     })
+  }
+
+  dismissAlert(){
+    this.showAlert = false;
+    this.notification = {
+      title: null,
+      description: null,
+      error: false
+    };
   }
 }
 export default App;
@@ -52,5 +79,10 @@ export default App;
     text-align: left;
     background: #ffffff;
     min-height: 100vh;
+  }
+  .notification {
+    top: 5%;
+    right: 5%;
+    max-width: 50%;
   }
 </style>

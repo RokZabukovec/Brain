@@ -1,12 +1,20 @@
 <template>
   <div class="hello">
-    <h1>Homepage</h1>
+    <Navbar />
+    <Hero/>
   </div>
 </template>
 
 <script>
+import Navbar from '@/components/Navbar.vue';
+import Hero from '@/components/homepage/Hero.vue';
+
 export default {
   name: 'Home',
+  components: {
+    Navbar,
+    Hero
+  }
 }
 </script>
 
