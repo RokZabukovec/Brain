@@ -18,24 +18,22 @@ import axios from "axios";
 import Authentication from "@/services/authentication";
 class LoginForm extends Vue {
   
-  
   email = '';
 
   password = '';
   
   
   loginUser() {
-    var data = {
+    let data = {
       "Email": this.email,
       "Password": this.password
     }
 
     axios({
       method: 'post',
-      url: "https://localhost:5001/api/auth/login",
+      url: "api/auth/login",
       data: data
     }).then(response => {
-      console.log(response)
       if (response.data._success) {
         Authentication.setToken(response.data._token)
         this.$router.push({name: 'Profile'});
@@ -48,7 +46,6 @@ class LoginForm extends Vue {
         this.$root.$emit('notification', notification);
         this.$root.$emit('login', true);
       } else {
-        console.log('Failed')
         let notification = {
           title: 'Login failed',
           description: 'Something went wrong. Try again.',
@@ -57,19 +54,15 @@ class LoginForm extends Vue {
         this.$root.$emit('notification', notification);
         this.$root.$emit('login', false);
       }
-    }).catch(error => {
-      
+    }).catch(() => {
       let notification = {
         title: 'Login Failed',
         error: true
       }
-
       this.$root.$emit('notification', notification);
       this.$root.$emit('login', false);
-      console.log(error);
     });
   }
-  
 }
 
 

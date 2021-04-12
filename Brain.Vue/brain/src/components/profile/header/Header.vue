@@ -1,6 +1,6 @@
 <template>
-  <div class="header">
-    <h1>{{ title }}</h1>
+  <div class="header mx-auto">
+    <h3>{{ title }}</h3>
     <p>{{ description }}</p>
   </div>
 </template>
@@ -20,10 +20,12 @@ export default Header;
 </script>
 
 <style scoped>
-  .header {
-    background: #eaeaea;
-    box-shadow: 3px 3px 3px #ccc;
-    padding: 1em 2em;
-    border-radius: 5px;
+
+  .header{
+    text-align: center;
+  }
+  
+  .header h3 {
+    font-weight: bold;
   }
 </style>

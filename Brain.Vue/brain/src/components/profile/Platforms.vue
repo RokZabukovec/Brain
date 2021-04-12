@@ -1,9 +1,7 @@
 <template>
     <div class="platforms mt-5">
-      <div class="d-flex justify-content-start">
+      <div class="d-flex justify-content-start position-relative">
         <div class="new-platform">
-          <b-button id="show-btn" variant="outline-primary" @click="$bvModal.show('new-platform')" v-show="platforms.length">New</b-button>
-          <b-button v-b-modal.modal-scrollable variant="outline-warning" @click="$bvModal.show('edit-platforms')" class="ml-2" v-show="platforms.length">Edit</b-button>
           <b-modal id="new-platform" hide-footer title="Add platform">
             <div>
               <b-form @submit.prevent="onSubmit">
@@ -42,9 +40,14 @@
           </b-modal>
         </div>
         <div v-for="platform in platforms" v-bind:key="platform.id" v-show="platforms.length > 0">
-          <div class="command py-2 px-3 d-flex mx-3"  v-on:click.prevent="platformClick(platform.name, platform.id)">
-            <p class="platform-link fs-3" :data-platform-id="platform.id">{{ platform.name }}</p>
+          <div class="d-flex mr-5 platform"  v-on:click.prevent="platformClick(platform.name, platform.id)">
+            <p :class="{'active': selected === platform.id}" :data-platform-id="platform.id">{{ platform.name }}</p>
           </div>
+        </div>
+        
+        <div class="platform-actions position-absolute d-flex">
+          <p class="ml-2 platform-action" @click="$bvModal.show('new-platform')" v-show="platforms.length">New</p>
+          <p class="ml-2 platform-action" @click="$bvModal.show('edit-platforms')" v-show="platforms.length">Edit</p>
         </div>
       </div>
     </div>
@@ -58,6 +61,9 @@ import axios from "axios";
 @Component
 class Platforms extends Vue {
   platforms = [];
+  
+  selected = null;
+  
   form = {
     Name: '',
     Description: ''
@@ -72,6 +78,7 @@ class Platforms extends Vue {
             this.form.Name = '';
             this.form.Description = '';
             this.$root.$emit('platform-created', response.data);
+            this.selected = response.data.id;
           }
         })
         .catch(error => {
@@ -82,10 +89,9 @@ class Platforms extends Vue {
   mounted() {
     axios.get("https://localhost:5001/api/platforms")
         .then(response => {
-          console.log(response);
           this.platforms = response.data;
-          console.log('LOADED', this.platforms[0]);
           this.$root.$emit('profile-loaded', this.platforms[0]);
+          this.selected = this.platforms[0].id;
         })
         .catch(error => {
           console.log(error);
@@ -94,16 +100,16 @@ class Platforms extends Vue {
 
   platformClick(platformName, platformId) {
     this.$root.$emit('update-commands', {id: platformId, name: platformName});
+    this.selected = platformId;
   }
 
   deletePlatform(platformId){
     let url = "https://localhost:5001/api/platforms/" + platformId;
     axios.delete(url)
-        .then(response => {
-          console.log(response);
-          console.log(this.platforms);
+        .then(() => {
           this.platforms.splice(this.platforms.findIndex(platform => platform.id === platformId), 1);
           this.$bvModal.hide('edit-platforms');
+          this.$root.$emit('platform-deleted', {deleted: platformId, first: this.platforms[0]});
         })
         .catch(error => {
           console.log(error);
@@ -114,23 +120,25 @@ export default Platforms;
 </script>
 
 <style scoped>
-  #show-btn{
-    background: none;
+
+  .active {
+    border-bottom: 2px solid #0b2e13;
   }
-  .command {
+  
+  .platform {
     cursor: pointer;
-    transition: border-bottom 0.3s ease-in;
-    box-sizing: border-box;
   }
   
-  .command:hover {
-    border-radius: 30px;
-    background: #dedede;
-    color: #1b1e21;
+  .platform-action {
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .platform-action:hover {
+    color: #dab900;
   }
   
-  .platform-link {
-    padding: 0;
-    margin: 0;
+  .platform-actions {
+    right: 0;
   }
 </style>

@@ -1,17 +1,5 @@
 <template>
   <div id="app">
-    <div aria-live="polite" aria-atomic="true" class="bg-dark position-relative bd-example-toasts" v-bind:variant="alertVariant" v-show="showAlert">
-      <div class="toast-container position-absolute p-3" id="toastPlacement">
-        <div class="toast">
-          <div class="toast-header">
-            <strong class="me-auto">{{ notification.title }}</strong>
-          </div>
-          <div class="toast-body">
-            {{ notification.description }}
-          </div>
-        </div>
-      </div>
-    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -65,24 +53,25 @@ export default App;
 </script>
 
 <style>
-
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
   html, body {
     padding: 0;
     margin: 0;
     color: #2c3e50;
   }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
   
   #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Open Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: left;
     background: #ffffff;
     min-height: 100vh;
-  }
-  .notification {
-    top: 5%;
-    right: 5%;
-    max-width: 50%;
   }
 </style>

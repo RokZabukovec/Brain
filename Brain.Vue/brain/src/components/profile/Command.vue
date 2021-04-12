@@ -1,7 +1,7 @@
 <template>
   <div class="command">
-    <code>{{ command.name }}</code>
-    <p>{{ command.description }}</p>
+    <h5 class="command-description">{{ command.description }}</h5>
+    <code class="command-text">{{ command.name }}</code>
 
     <b-modal v-bind:id="command.name + '-' + command.id.toString()" hide-footer>
       <b-form @submit.prevent="onCommandUpdate">
@@ -60,16 +60,23 @@ export default Command;
 </script>
 
 <style scoped>
-
   .command {
-    padding: 1em;
     transition: 0.1s ease;
     cursor: pointer;
     border-radius: 5px;
+    padding: 1em 0;
   }
   
-  .command:hover {
-    background: #fdfdfd;
-    box-shadow: 1px 1px 5px #ccc;
+  code.command-text {
+    padding: 1em;
+    margin: 0.5em 0;
+    min-width: 100%;
+    background: #fafafa;
+    display: inline-block;
   }
+  
+  .command-description {
+    font-weight: bold;
+  }
+  
 </style>

@@ -5,15 +5,16 @@
         <h5 class="text-secondary font-weight-bold">Getting started</h5>
         <ol>
           <li v-show="platformId == null">Create a <span class="show-btn" @click="$bvModal.show('new-platform')">new platform.</span></li>
-          <li>Add a <span class="show-btn" @click="$bvModal.show('new-category')">first category</span> for the created platform.</li>
+          <li v-show="platformId !== null">Add a <span class="show-btn" @click="$bvModal.show('new-category')">first category</span> for the created platform.</li>
         </ol>
       </div>
       <div class="col-md-12 px-0 py-5">
         <div v-for="category in categories" v-bind:key="category.id">
           <Category v-bind:category="category"/>
         </div>
-        <button class="btn btn-block btn-primary" @click="$bvModal.show('new-category')">New category</button>
-        <!-- NEW CATEGORY MODAL-->
+        <div class="new-category-btn w-100 d-flex justify-content-end fixed-bottom p-5">
+          <button v-show="platformId !== null" class="btn btn-outline-primary" @click="$bvModal.show('new-category')">New category</button>
+        </div>
         <div class="new-category mt-5">
           <b-modal id="new-category" title="Add category" hide-footer>
             <div>
@@ -60,6 +61,12 @@ class Commands extends Vue {
   categories = [];
   
   mounted(){
+    this.$root.$on('category-delete', (categoryId) => {
+      console.log('CATGEORY ID', categoryId);
+      let i = this.categories.splice(this.categories.findIndex(category => category.id === categoryId), 1);
+      console.log('Deleted',i);
+    });
+    
     this.$root.$on('update-commands', (platform) => {
       let url = "https://localhost:5001/api/categories/platform/" + platform.id;
       this.platformId = platform.id;
@@ -71,26 +78,48 @@ class Commands extends Vue {
             console.log(error);
           });
     });
-
+    
     this.$root.$on('platform-created', (platform) => {
-      this.platformId = platform.id;
+      if (platform) {
+        let url = "https://localhost:5001/api/categories/platform/" + platform.id;
+        axios.get(url)
+            .then(response => {
+              this.categories = response.data;
+            })
+            .catch(error => {
+              console.log(error);
+            });
+      }
     });
 
-    this.$root.$on('profile-loaded', (platform) => {
-      console.log(platform);
-      this.platformId = platform.id;
+    this.$root.$on('platform-deleted', (response) => {
+      if (response.first) {
+        this.platformId = response.first.id;
+        let url = "https://localhost:5001/api/categories/platform/" + response.first.id;
+        axios.get(url)
+            .then(response => {
+              this.categories = response.data;
+            })
+            .catch(error => {
+              console.log(error);
+            });
+      }
     });
     
-    if (this.platformId){
-      let url = "https://localhost:5001/api/categories/platform/" + this.platformId;
-      axios.get(url)
-          .then(response => {
-            this.categories = response.data;
-          })
-          .catch(error => {
-            console.log(error);
-          });
-    }
+    this.$root.$on('profile-loaded', (platform) => {
+      if (platform) {
+        this.platformId = platform.id;
+        let url = "https://localhost:5001/api/categories/platform/" + platform.id;
+        axios.get(url)
+            .then(response => {
+              this.categories = response.data;
+            })
+            .catch(error => {
+              console.log(error);
+            });
+      }
+    });
+
   }
 
   onCategorySave(){
@@ -118,10 +147,6 @@ export default Commands;
     color: #005cbf;
     cursor: pointer;
     font-weight: bold;
-  }
-  
-  #show-btn:hover {
-    text-decoration: underline;
   }
   
   @keyframes fadeIn {

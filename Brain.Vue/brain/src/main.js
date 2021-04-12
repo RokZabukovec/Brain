@@ -12,6 +12,9 @@ import Register from '@/pages/Register.vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import VueCookies from 'vue-cookies';
+import config from '@/config';
+
+axios.defaults.baseURL = config.BrainUrl;
 
 Vue.use(VueCookies)
 Vue.use(VueRouter)
