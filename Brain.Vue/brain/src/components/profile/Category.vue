@@ -1,7 +1,7 @@
 <template>
-  <div class="category">
-    <div class="d-flex justify-content-between">
-      <h3><b>{{ category.name }}</b></h3>
+  <div class="category" :id="slugifyCategoryName">
+    <div class="d-flex justify-content-between" :id="category.name + '-' + category.id.toString()">
+      <h3><b><a class="category-link" :href="'#' + slugifyCategoryName">#</a>{{ category.name }}</b></h3>
       <h5 class="new-command-btn" @click="$bvModal.show(category.name + '-' + category.id.toString())">&plus;</h5>
     </div>
     <div class="container">
@@ -53,6 +53,13 @@ class Category extends Vue {
     CategoryId: null
   }
   
+  get slugifyCategoryName() {
+    return this.$props.category.name
+        .toLowerCase()
+        .split(' ')
+        .join('_');
+  }
+  
   onCommandSave(categoryId) {
     this.commandForm.CategoryId = categoryId;
     let url = "api/commands";
@@ -96,6 +103,12 @@ export default Category;
 </script>
 
 <style scoped>
+  .category-link {
+    color: #00ABB5;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-right: 0.5em;
+  }
   
   .category {
     margin: 1em 0;

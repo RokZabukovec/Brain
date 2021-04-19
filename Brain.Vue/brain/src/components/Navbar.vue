@@ -38,7 +38,6 @@ class Navbar extends Vue {
   mounted() {
     this.$root.$on('login', (login) => {
       this.isAuthenticated = login;
-      console.log('Logged in')
     })
     
   }
@@ -47,11 +46,6 @@ class Navbar extends Vue {
     localStorage.removeItem('brain_token');
     this.$router.push({name: 'Login'});
     this.isAuthenticated = false;
-    let notification = {
-      title: 'Logout Successful',
-      error: false
-    }
-    this.$root.$emit('notification', notification);
   }
   
 }

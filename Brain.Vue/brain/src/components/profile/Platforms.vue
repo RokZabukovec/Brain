@@ -125,6 +125,10 @@ export default Platforms;
     border-bottom: 2px solid #0b2e13;
   }
   
+  .platforms {
+    overflow-x: scroll;
+  }
+  
   .platform {
     cursor: pointer;
   }

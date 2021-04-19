@@ -37,29 +37,11 @@ class LoginForm extends Vue {
       if (response.data._success) {
         Authentication.setToken(response.data._token)
         this.$router.push({name: 'Profile'});
-        let notification = {
-          title: 'Login Successful',
-          description: null,
-          error: false
-        }
-        
-        this.$root.$emit('notification', notification);
         this.$root.$emit('login', true);
       } else {
-        let notification = {
-          title: 'Login failed',
-          description: 'Something went wrong. Try again.',
-          error: false
-        }
-        this.$root.$emit('notification', notification);
         this.$root.$emit('login', false);
       }
     }).catch(() => {
-      let notification = {
-        title: 'Login Failed',
-        error: true
-      }
-      this.$root.$emit('notification', notification);
       this.$root.$emit('login', false);
     });
   }
