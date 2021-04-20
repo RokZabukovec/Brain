@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.808.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brain.Api", "Brain.Api\Brain.Api.csproj", "{4C77BFAB-EB12-4133-BDC4-018D56071C2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brain.Cli", "Brain.Cli\Brain.Cli.csproj", "{B298228D-E50C-48AD-B88D-65DB310FB272}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4C77BFAB-EB12-4133-BDC4-018D56071C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C77BFAB-EB12-4133-BDC4-018D56071C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C77BFAB-EB12-4133-BDC4-018D56071C2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B298228D-E50C-48AD-B88D-65DB310FB272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B298228D-E50C-48AD-B88D-65DB310FB272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B298228D-E50C-48AD-B88D-65DB310FB272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B298228D-E50C-48AD-B88D-65DB310FB272}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
